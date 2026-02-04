@@ -1,4 +1,4 @@
-package com.davidantassdev.salus.medico;
+package com.davidantassdev.salus.domain.medico;
 
 public enum Especialidade {
     ORTOPEDIA,

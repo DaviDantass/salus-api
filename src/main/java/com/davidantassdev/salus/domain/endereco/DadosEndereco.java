@@ -1,4 +1,4 @@
-package com.davidantassdev.salus.endereco;
+package com.davidantassdev.salus.domain.endereco;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

@@ -1,6 +1,6 @@
-package com.davidantassdev.salus.medico;
+package com.davidantassdev.salus.domain.medico;
 
-import com.davidantassdev.salus.endereco.DadosEndereco;
+import com.davidantassdev.salus.domain.endereco.DadosEndereco;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
