@@ -30,6 +30,8 @@ public class MedicoController {
 
     @GetMapping
     public ResponseEntity<Page<DadosListagemMedico>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
+
+
         var page = medicoRepository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
         return ResponseEntity.ok(page);
     }
@@ -49,11 +51,6 @@ public class MedicoController {
         medico.excluir();
         return ResponseEntity.noContent().build();
     }
-    // padronzizar o erro desse bixin
-    // se passar um id que nao existe eu tomo um entity not found -> getReferenceById
-    // ai eu me fodo e mete um stacj trace cabuloso, tem q ser 404
-    // ao inves de repetir codigo e tratar erro em todos os casos de todos os metodos neste controler
-    // por exemplo. eu criarei uma classe para centralizar o tratamento dos erros
     @GetMapping("/{id}")
     public ResponseEntity<DadosListagemMedico> detalhar(@PathVariable Long id){
         var medico = medicoRepository.getReferenceById(id);
