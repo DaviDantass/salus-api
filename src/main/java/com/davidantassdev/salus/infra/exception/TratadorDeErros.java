@@ -1,5 +1,6 @@
 package com.davidantassdev.salus.infra.exception;
 
+import com.davidantassdev.salus.domain.ValidacaoException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -21,9 +22,15 @@ public class TratadorDeErros {
         return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao::new).toList());
     }
 
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity tratarErroRegraDeNegocio(ValidacaoException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
     private record DadosErroValidacao(String campo, String mensagem) {
         public DadosErroValidacao(FieldError erro) {
             this(erro.getField(), erro.getDefaultMessage());
         }
     }
+
 }
