@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Arquivo de configuração de testes (não subir senha)
+src/main/resources/application-test.properties
+src/main/resources/application.properties
