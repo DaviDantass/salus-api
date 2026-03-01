@@ -18,39 +18,51 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfigurations {
 
-    @Autowired
-    private SecurityFilter securityFilter;
+        @Autowired
+        private SecurityFilter securityFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui.html",
-                                "/swagger-ui/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(securityFilter,
-                        UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+                return http
+                                .csrf(csrf -> csrf.disable())
+                                .cors(cors -> cors.configurationSource(request -> {
+                                        var config = new org.springframework.web.cors.CorsConfiguration();
+                                        config.setAllowedOrigins(java.util.Arrays.asList(
+                                                        "http://localhost:3000",
+                                                        "http://localhost:5173",
+                                                        "http://localhost:8080"));
+                                        config.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE",
+                                                        "OPTIONS"));
+                                        config.setAllowedHeaders(java.util.Arrays.asList("*"));
+                                        config.setAllowCredentials(true);
+                                        config.setMaxAge(3600L);
+                                        return config;
+                                }))
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/health").permitAll()
+                                                .requestMatchers(
+                                                                "/v3/api-docs/**",
+                                                                "/swagger-ui.html",
+                                                                "/swagger-ui/**")
+                                                .permitAll()
+                                                .anyRequest().authenticated())
+                                .addFilterBefore(securityFilter,
+                                                UsernamePasswordAuthenticationFilter.class)
+                                .build();
+        }
 
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+                return configuration.getAuthenticationManager();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
